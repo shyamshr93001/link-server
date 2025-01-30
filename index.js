@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoute = require('./router/userRoute');
+const topicRoute = require('./router/topicRoute');
 
 const app = express();
 const port = 5000;
@@ -23,6 +24,7 @@ mongoose.connect('mongodb://localhost:27017/testCollec', {
     })
 
 app.use('/', userRoute);
+app.use('/', topicRoute);
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
