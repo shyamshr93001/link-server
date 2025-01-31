@@ -1,4 +1,9 @@
 const Users = require('../model/user');
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken')
+
+dotenv.config();
+
 
 exports.createUser = async (req, res) => {
     try {
@@ -44,7 +49,10 @@ exports.loginUser = async (req, res) => {
 
         if (user) {
             if (user.password === req.body.password) {
-                res.send(user);
+
+                const token = jwt.sign({user}, process.env.SECRET_KEY, { expiresIn: '1h' });
+
+                return res.json({ message: 'Login successful', token, data: user });
             }
             else {
                 res.status(400).send("Password incorrect")
