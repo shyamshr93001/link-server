@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const UserSchema = new Schema({
     email: { type: String, required: true },
@@ -11,7 +11,9 @@ const UserSchema = new Schema({
     active: { type: Boolean, default: true, required: true },
     dateCreated: { type: Date, default: Date.now, required: true },
     lastUpdated: { type: Date, default: Date.now, required: true },
-    
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
+
 });
 
 const Users = mongoose.model("Users", UserSchema);

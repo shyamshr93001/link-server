@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoute = require('./router/userRoute');
 const topicRoute = require('./router/topicRoute');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = 5000;
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 mongoose.connect('mongodb://localhost:27017/testCollec', {
     useNewUrlParser: true,

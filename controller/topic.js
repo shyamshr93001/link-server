@@ -24,7 +24,6 @@ exports.getTopics = async (req, res) => {
 
     try {
         const topic = await Topics.find();
-        console.log(topic)
         res.send(topic);
     } catch (err) {
         console.error('Error getting user:', err);
