@@ -5,7 +5,13 @@ exports.createTopic = async (req, res) => {
     try {
 
         const { name, createdBy, visibility } = req.body;
+        const checkTopic = await Topics.findOne({name}).exec();
+
         console.log("Creating user");
+        if (checkTopic) {
+            res.status(500).send("Topic Exists Already")
+            return
+        }
         const topic = new Topics({
             name: name,
             createdBy: createdBy,

@@ -104,10 +104,11 @@ exports.forgetPassword = async (req, res) => {
   
     const token = crypto.randomBytes(20).toString('hex');
     user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
-  
-    const resetUrl = `http://localhost:5000/resetPassword/${token}`
+
+    console.log(user)
+    const resetUrl = `${process.env.CLIENT_URL}/resetPassword/?token=${token}`
     const mailOptions = {
       to: user.email,
       from: 'shyam@drapcode.com',
@@ -137,7 +138,7 @@ exports.forgetPassword = async (req, res) => {
       return res.status(400).send('Password reset token is invalid or has expired');
     }
   
-    user.password = newPassword; // You should hash the password before saving
+    user.password = newPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
