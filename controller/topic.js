@@ -53,7 +53,7 @@ exports.deleteTopic = async (req, res) => {
 exports.updateTopic = async (req, res) => {
     try {
         const { name, visibility, newName } = req.body;
-        const checkTopic = await Topics.findOne({ name: newName }).exec();
+        const checkTopic = await Topics.findOne({ name: newName, visibility:visibility }).exec();
 
         if (checkTopic) {
             res.send("Topic Exists Already")
