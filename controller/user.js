@@ -64,7 +64,7 @@ exports.getUser = async (req, res) => {
         // console.log(user)
         // res.send(user);
     } catch (err) {
-        console.error('Error getting user:', err);
+        res.status(500).send('Error getting user:', err);
     }
 };
 
@@ -89,7 +89,7 @@ exports.loginUser = async (req, res) => {
             res.status(400).send("User not found")
         }
     } catch (err) {
-        console.error('Error getting user:', err);
+        res.status(500).send('Error getting user:', err);
     }
 };
 
