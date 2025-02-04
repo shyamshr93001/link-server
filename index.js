@@ -1,14 +1,14 @@
 const express = require('express');
-const path = require('path');
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dotenv = require('dotenv');
 const userRoute = require('./router/userRoute');
 const topicRoute = require('./router/topicRoute');
-const nodemailer = require('nodemailer');
 
 const app = express();
-const port = 5000;
+
+dotenv.config();
 
 app.use(cors())
 
@@ -31,6 +31,6 @@ app.get('/', (req, res) => {
     res.send('Hello World');
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });

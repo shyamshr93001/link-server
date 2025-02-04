@@ -3,7 +3,6 @@ const {Schema} = mongoose;
 
 const TopicSchema = new Schema({
     name: { type: String, required: true },
-    // createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true},
     createdBy: { type: String, required: true },
     dateCreated: { type: Date, default: Date.now, required: true },
     lastUpdated: { type: Date, default: Date.now, required: true },

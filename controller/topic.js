@@ -5,10 +5,14 @@ exports.createTopic = async (req, res) => {
     try {
 
         const { name, createdBy, visibility } = req.body;
+        if (!(name && createdBy && visibility)) {
+            return res.status(400).send("Missing Fields")
+        }
+
         const checkTopic = await Topics.findOne({ name }).exec();
 
         if (checkTopic) {
-            res.status(500).send("Topic Exists Already")
+            res.status(409).send("Topic Exists Already")
             return
         }
         const topic = new Topics({
@@ -38,10 +42,14 @@ exports.getTopics = async (req, res) => {
 exports.deleteTopic = async (req, res) => {
     try {
         const { name } = req.body;
-        console.log(name)
+
+        if (!name) {
+            return res.status(400).send("Missing Fields")
+        }
+
         const topic = await Topics.findOneAndDelete({ name }).exec();
         if (topic == null)
-            res.send("Topic does not exist")
+            res.status(500).send("Topic does not exist")
         else
             res.send("Topic deleted from server")
     } catch (err) {
@@ -53,17 +61,22 @@ exports.deleteTopic = async (req, res) => {
 exports.updateTopic = async (req, res) => {
     try {
         const { name, visibility, newName } = req.body;
-        const checkTopic = await Topics.findOne({ name: newName, visibility:visibility }).exec();
+
+        if (!name || !visibility || !newName) {
+            return res.status(400).send("Missing Fields")
+        }
+
+        const checkTopic = await Topics.findOne({ name: newName, visibility: visibility }).exec();
 
         if (checkTopic) {
-            res.send("Topic Exists Already")
+            res.status(409).send("Topic Exists Already")
             return
         }
 
         const topic = await Topics.findOneAndUpdate
             ({ name }, { name: newName, visibility }).exec();
         if (topic == null)
-            res.send("Topic does not exist")
+            res.status(500).send("Topic does not exist")
         else
             res.send("Topic updated from server")
     }
