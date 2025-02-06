@@ -1,11 +1,17 @@
-const express = require('express');
+import express from "express";
+import validateBody from "../middleware/validateBody.js";
+import {
+  createTopic,
+  getTopics,
+  deleteTopic,
+  updateTopic,
+} from "../controller/topic.js";
+
 const router = express.Router();
-const validateBody = require('../middleware/validateBody');
-const { createTopic, getTopics, deleteTopic, updateTopic } = require('../controller/topic');
 
 router.get("/getTopics", getTopics);
 router.post("/createTopic", validateBody, createTopic);
 router.post("/deleteTopic", validateBody, deleteTopic);
 router.post("/updateTopic", validateBody, updateTopic);
 
-module.exports = router;
+export default router;

@@ -1,12 +1,19 @@
-const express = require('express');
+import express from "express";
+import validateBody from "../middleware/validateBody.js";
+import {
+  createUser,
+  getUser,
+  loginUser,
+  resetPassword,
+  forgetPassword,
+} from "../controller/user.js";
+
 const router = express.Router();
-const validateBody = require('../middleware/validateBody');
-const { createUser, getUser, loginUser, resetPassword, forgetPassword } = require('../controller/user');
 
 router.post("/createUser", validateBody, createUser);
 router.post("/getUser", validateBody, getUser);
 router.post("/loginUser", validateBody, loginUser);
-router.post('/resetPassword/:token', validateBody, resetPassword);
-router.post('/forgetPassword', validateBody, forgetPassword);
+router.post("/resetPassword/:token", validateBody, resetPassword);
+router.post("/forgetPassword", validateBody, forgetPassword);
 
-module.exports = router;
+export default router;
