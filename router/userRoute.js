@@ -7,11 +7,12 @@ import {
   resetPassword,
   forgetPassword,
 } from "../controller/user.js";
+import checkAuth from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.post("/createUser", validateBody, createUser);
-router.post("/getUser", validateBody, getUser);
+router.post("/getUser",checkAuth, validateBody, getUser);
 router.post("/loginUser", validateBody, loginUser);
 router.post("/resetPassword/:token", validateBody, resetPassword);
 router.post("/forgetPassword", validateBody, forgetPassword);

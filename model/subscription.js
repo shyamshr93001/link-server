@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const SubsSchema = new Schema({
-    uuid: { type: String },
+  uuid: { type: String },
   topic: { type: String, required: true },
   user: { type: String, required: true },
   seriousness: {

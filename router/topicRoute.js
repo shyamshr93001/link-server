@@ -6,12 +6,13 @@ import {
   deleteTopic,
   updateTopic,
 } from "../controller/topic.js";
+import checkAuth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/getTopics", getTopics);
-router.post("/createTopic", validateBody, createTopic);
-router.post("/deleteTopic", validateBody, deleteTopic);
-router.post("/updateTopic", validateBody, updateTopic);
+router.get("/getTopics", checkAuth, getTopics);
+router.post("/createTopic", checkAuth, validateBody, createTopic);
+router.post("/deleteTopic", checkAuth, validateBody, deleteTopic);
+router.post("/updateTopic", checkAuth, validateBody, updateTopic);
 
 export default router;
