@@ -1,36 +1,38 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require("body-parser");
-const mongoose = require('mongoose');
-const cors = require('cors');
-const userRoute = require('./router/userRoute');
-const topicRoute = require('./router/topicRoute');
-const nodemailer = require('nodemailer');
+import express from "express";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import userRoute from "./router/user.routes.js";
+import topicRoute from "./router/topic.routes.js";
+import subsRoute from "./router/subscribe.routes.js"
 
 const app = express();
-const port = 5000;
 
-app.use(cors())
+dotenv.config();
 
-app.use(express.json())
+app.use(cors());
+
+app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-mongoose.connect('mongodb://localhost:27017/testCollec', {
+mongoose
+  .connect("mongodb://localhost:27017/testCollec", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(() => {
-        console.log("connection successfull")
-    })
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("connection successful");
+  });
 
-app.use('/', userRoute);
-app.use('/', topicRoute);
-app.get('/', (req, res) => {
-    res.send('Hello World');
+app.use("/", userRoute);
+app.use("/", topicRoute);
+app.use("/", subsRoute)
+app.get("/", (req, res) => {
+  res.send("Hello World");
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
