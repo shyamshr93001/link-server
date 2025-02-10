@@ -5,7 +5,7 @@ import {
   getTopics,
   deleteTopic,
   updateTopic,
-} from "../controller/topic.js";
+} from "../controller/topic.controller.js";
 import checkAuth from "../middleware/auth.js";
 
 const router = express.Router();

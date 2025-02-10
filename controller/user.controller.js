@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 dotenv.config();
 
@@ -28,23 +28,19 @@ export const createUser = async (req, res) => {
       $or: [{ email: email }, { username: username }],
     }).exec();
 
-    console.log(checkUser);
+    if (checkUser) return res.status(409).send("User Exists Already");
 
-    if (!checkUser) {
-      const user = new Users({
-        uuid: uuidv4(),
-        email: email,
-        username: username,
-        password: password,
-        firstname: firstname,
-        lastname: lastname,
-      });
-      console.log(user);
-      await user.save();
-      res.send("created");
-    } else {
-      res.status(409).send("User Exists Already");
-    }
+    const user = new Users({
+      uuid: uuidv4(),
+      email: email,
+      username: username,
+      password: password,
+      firstname: firstname,
+      lastname: lastname,
+    });
+    console.log(user);
+    await user.save();
+    res.send("created");
   } catch (err) {
     console.error("Error saving user:", err);
     res.status(500).send("Error saving data");
@@ -52,20 +48,9 @@ export const createUser = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  let token = req.header("Authorization");
-
-  if (!token) {
-    return res.status(401).json({ message: "No token provided" });
-  }
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     res.send(decoded.user);
-    // return
-    // const user = await Users.findOne({
-    //     $or: [{ email: req.body.email }, { username: req.body.username }]
-    // }).exec();
-    // console.log(user)
-    // res.send(user);
   } catch (err) {
     res.status(500).send("Error getting user:", err);
   }
@@ -85,17 +70,15 @@ export const loginUser = async (req, res) => {
       $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
     }).exec();
 
-    if (user) {
-      if (user.password === password) {
-        const token = jwt.sign({ user }, process.env.SECRET_KEY, {
-          expiresIn: "1h",
-        });
-        return res.json({ message: "Login successful", token, data: user });
-      } else {
-        res.status(400).send("Password incorrect");
-      }
+    if (!user) {
+      return res.status(500).send("User not found");
+    }
+
+    if (user.password === password) {
+      const token = jwt.sign({ user }, process.env.SECRET_KEY);
+      return res.json({ message: "Login successful", token, data: user });
     } else {
-      res.status(500).send("User not found");
+      res.status(400).send("Password incorrect");
     }
   } catch (err) {
     res.status(500).send("Error getting user:", err);

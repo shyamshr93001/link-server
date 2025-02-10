@@ -2,11 +2,7 @@ import Topics from "../model/topic.js";
 import { v4 as uuidv4 } from "uuid";
 
 export const createTopic = async (req, res) => {
-  let token = req.header("Authorization");
-
-  if (!token) {
-    return res.status(403).send("Forbidden");
-  }
+  
   try {
     const { name, createdBy, visibility } = req.body;
     if (!(name && createdBy && visibility)) {
@@ -27,7 +23,7 @@ export const createTopic = async (req, res) => {
     });
     console.log(topic);
     await topic.save();
-    res.send("Topic created from server");
+    res.send(topic);
   } catch (err) {
     console.error("Error saving topic:", err);
     res.status(500).send("Error saving topic");
@@ -35,11 +31,7 @@ export const createTopic = async (req, res) => {
 };
 
 export const getTopics = async (req, res) => {
-  let token = req.header("Authorization");
-
-  if (!token) {
-    return res.status(401).json({ message: "No token provided" });
-  }
+ 
   try {
     const topic = await Topics.find();
     res.send(topic);

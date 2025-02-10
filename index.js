@@ -3,8 +3,9 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import userRoute from "./router/userRoute.js";
-import topicRoute from "./router/topicRoute.js";
+import userRoute from "./router/user.routes.js";
+import topicRoute from "./router/topic.routes.js";
+import subsRoute from "./router/subscribe.routes.js"
 
 const app = express();
 
@@ -27,6 +28,7 @@ mongoose
 
 app.use("/", userRoute);
 app.use("/", topicRoute);
+app.use("/", subsRoute)
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
