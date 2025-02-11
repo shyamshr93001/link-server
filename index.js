@@ -1,11 +1,11 @@
 import express from "express";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRoute from "./router/user.routes.js";
 import topicRoute from "./router/topic.routes.js";
-import subsRoute from "./router/subscribe.routes.js"
+import subsRoute from "./router/subscribe.routes.js" 
+import "./db.js";
 
 const app = express();
 
@@ -16,15 +16,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
-mongoose
-  .connect("mongodb://localhost:27017/testCollec", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("connection successful");
-  });
 
 app.use("/", userRoute);
 app.use("/", topicRoute);

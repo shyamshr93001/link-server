@@ -6,8 +6,8 @@ import { getSubscribers, subscribeTopic, unsubscribeTopic } from "../controller/
 
 const router = express.Router();
 
-router.get("/getSubscribers", getSubscribers);
-router.post("/subscribe", validateBody, subscribeTopic);
-router.post("/unsubscribe", validateBody, unsubscribeTopic);
+router.get("/getSubscribers", checkAuth, getSubscribers);
+router.post("/subscribe", checkAuth, validateBody, subscribeTopic);
+router.post("/unsubscribe",checkAuth, validateBody, unsubscribeTopic);
 
 export default router;
