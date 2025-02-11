@@ -1,8 +1,9 @@
-import Topics from "../model/topic.js";
+import Subscriptions from "../model/subscription.model.js";
+import Topics from "../model/topic.model.js";
+
 import { v4 as uuidv4 } from "uuid";
 
 export const createTopic = async (req, res) => {
-  
   try {
     const { name, createdBy, visibility } = req.body;
     if (!(name && createdBy && visibility)) {
@@ -31,7 +32,6 @@ export const createTopic = async (req, res) => {
 };
 
 export const getTopics = async (req, res) => {
- 
   try {
     const topic = await Topics.find();
     res.send(topic);
@@ -49,6 +49,12 @@ export const deleteTopic = async (req, res) => {
     }
 
     const topic = await Topics.findOneAndDelete({ name }).exec();
+
+    const subscriptions = await Subscriptions.find({ topic: name }).exec();
+    
+    if (subscriptions.length !== 0)
+      await Subscriptions.deleteMany({ topic: name }).exec();
+    
     if (topic == null) res.status(500).send("Topic does not exist");
     else res.send("Topic deleted from server");
   } catch (err) {

@@ -1,5 +1,6 @@
-import Subscriptions from "../model/subscription.js";
+import Subscriptions from "../model/subscription.model.js";
 import { v4 as uuidv4 } from "uuid";
+import Test from "../model/test.model.js";
 
 export const subscribeTopic = async (req, res) => {
   try {
@@ -57,5 +58,39 @@ export const getSubscribers = async (req, res) => {
     res.send(subs);
   } catch (err) {
     res.status(500).send("Error getting subscribers:", err);
+  }
+};
+
+export const testFunc = async (req, res) => {
+  
+  try {
+    const topic = new Test({
+      topic: req.body.topic,
+      user: req.body.user,
+    });
+
+    await topic.save();
+    res.send(topic);
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+export const testReadFunc = async (req, res) => {
+  try {
+    console.log("topicname", req.body.topic);
+    const topics = await Test.find().populate({
+      path: 'topic',
+      foreignField: 'uuid'
+    })
+    .populate({
+      path: 'user',
+      foreignField: 'uuid'
+    })
+    .exec();
+    res.send(topics);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error reading topics:", err);
   }
 };

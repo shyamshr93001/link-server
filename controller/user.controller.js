@@ -1,4 +1,4 @@
-import Users from "../model/user.js";
+import Users from "../model/user.model.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -17,10 +17,11 @@ const transporter = nodemailer.createTransport({
 });
 
 export const createUser = async (req, res) => {
+  console.log("user", req.body)
   try {
-    const { email, username, password, firstname, lastname } = req.body;
+    const { email, username, password, firstName, lastName } = req.body;
 
-    if (!(email && username && password && firstname && lastname)) {
+    if (!(email && username && password && firstName && lastName)) {
       return res.status(400).send("Missing Fields");
     }
 
@@ -35,8 +36,8 @@ export const createUser = async (req, res) => {
       email: email,
       username: username,
       password: password,
-      firstname: firstname,
-      lastname: lastname,
+      firstName: firstName,
+      lastName: lastName,
     });
     console.log(user);
     await user.save();
