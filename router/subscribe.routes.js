@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/getSubscribers", checkAuth, getSubscribers);
 router.post("/subscribe", checkAuth, validateBody, subscribeTopic);
-router.post("/unsubscribe",checkAuth, validateBody, unsubscribeTopic);
+router.delete("/unsubscribe",checkAuth, validateBody, unsubscribeTopic);
 
 router.post('/test', testFunc)
 router.post('/test1', testReadFunc)

@@ -41,6 +41,7 @@ export const getTopics = async (req, res) => {
 };
 
 export const deleteTopic = async (req, res) => {
+  console.log("shyam body", req.body)
   try {
     const { name } = req.body;
 

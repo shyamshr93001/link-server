@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import userRoute from "./router/user.routes.js";
 import topicRoute from "./router/topic.routes.js";
 import subsRoute from "./router/subscribe.routes.js" 
-import "./db.js";
+import "./config/mongo.config.js";
 
 const app = express();
 

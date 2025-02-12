@@ -2,22 +2,13 @@ import Users from "../model/user.model.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
+import { transporter, getMailOptions } from "../utils/mailer.utils.js";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  secure: true,
-  auth: {
-    user: "shyam@drapcode.com",
-    pass: process.env.SECRET_PASS,
-  },
-});
-
 export const createUser = async (req, res) => {
-  console.log("user", req.body)
+  console.log("user", req.body);
   try {
     const { email, username, password, firstName, lastName } = req.body;
 
@@ -41,7 +32,7 @@ export const createUser = async (req, res) => {
     });
     console.log(user);
     await user.save();
-    res.send("created");
+    res.status(200).send("Registered Successfully");
   } catch (err) {
     console.error("Error saving user:", err);
     res.status(500).send("Error saving data");
@@ -96,18 +87,13 @@ export const forgetPassword = async (req, res) => {
 
   const token = crypto.randomBytes(20).toString("hex");
   user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 3600000;
+  user.resetPasswordExpires = Date.now() + 360000;
   await user.save();
 
   console.log(user);
-  const resetUrl = `${process.env.CLIENT_URL}/resetPassword/?token=${token}`;
-  const mailOptions = {
-    to: user.email,
-    from: "shyam@drapcode.com",
-    subject: "Password Reset Request",
-    text: `Please click the link to reset your password: ${resetUrl}`,
-  };
 
+  const mailOptions = getMailOptions(token, user.email);
+  console.log("mailopton", mailOptions)
   transporter.sendMail(mailOptions, (err, response) => {
     if (err) {
       return res.status(500).send("Error sending email");
