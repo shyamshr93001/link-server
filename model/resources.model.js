@@ -9,5 +9,5 @@ const ResourceSchema = new Schema({
   lastUpdated: { type: Date, default: Date.now, required: true },
 });
 
-const Resources = mongoose.model("Resources", ResourceSchema);
-export default Resources;
+const Resource = mongoose.model("Resources", ResourceSchema);
+export default Resource;

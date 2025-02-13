@@ -1,23 +1,33 @@
+import {
+  TOPIC_ALREADY_EXISTS,
+  TOPIC_CREATED_FAIL,
+  TOPIC_DELETE_FAIL,
+  TOPIC_DELETE_SUCCESS,
+  TOPIC_NOT_FOUND,
+  TOPIC_UPDATE_FAIL,
+  TOPIC_UPDATE_SUCCESS,
+} from "../constants/topic.constants.js";
+import { MISSING_FIELD } from "../constants/user.constants.js";
 import Subscriptions from "../model/subscription.model.js";
 import Topics from "../model/topic.model.js";
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidV4 } from "uuid";
 
 export const createTopic = async (req, res) => {
   try {
     const { name, createdBy, visibility } = req.body;
     if (!(name && createdBy && visibility)) {
-      return res.status(400).send("Missing Fields");
+      return res.status(400).send(MISSING_FIELD);
     }
 
     const checkTopic = await Topics.findOne({ name }).exec();
 
     if (checkTopic) {
-      res.status(409).send("Topic Exists Already");
+      res.status(409).send(TOPIC_ALREADY_EXISTS);
       return;
     }
     const topic = new Topics({
-      uuid: uuidv4(),
+      uuid: uuidV4(),
       name: name,
       createdBy: createdBy,
       visibility: visibility,
@@ -27,7 +37,7 @@ export const createTopic = async (req, res) => {
     res.send(topic);
   } catch (err) {
     console.error("Error saving topic:", err);
-    res.status(500).send("Error saving topic");
+    res.status(500).send(TOPIC_CREATED_FAIL);
   }
 };
 
@@ -41,26 +51,25 @@ export const getTopics = async (req, res) => {
 };
 
 export const deleteTopic = async (req, res) => {
-  console.log("shyam body", req.body)
   try {
     const { name } = req.body;
 
     if (!name) {
-      return res.status(400).send("Missing Fields");
+      return res.status(400).send(MISSING_FIELD);
     }
 
     const topic = await Topics.findOneAndDelete({ name }).exec();
 
     const subscriptions = await Subscriptions.find({ topic: name }).exec();
-    
+
     if (subscriptions.length !== 0)
       await Subscriptions.deleteMany({ topic: name }).exec();
-    
-    if (topic == null) res.status(500).send("Topic does not exist");
-    else res.send("Topic deleted from server");
+
+    if (topic == null) res.status(500).send(TOPIC_NOT_FOUND);
+    else res.send(TOPIC_DELETE_SUCCESS);
   } catch (err) {
     console.error("Error deleting topic:", err);
-    res.status(500).send("Error deleting topic");
+    res.status(500).send(TOPIC_DELETE_FAIL);
   }
 };
 
@@ -69,7 +78,7 @@ export const updateTopic = async (req, res) => {
     const { name, visibility, newName } = req.body;
 
     if (!name || !visibility || !newName) {
-      return res.status(400).send("Missing Fields");
+      return res.status(400).send(MISSING_FIELD);
     }
 
     const checkTopic = await Topics.findOne({
@@ -78,7 +87,7 @@ export const updateTopic = async (req, res) => {
     }).exec();
 
     if (checkTopic) {
-      res.status(409).send("Topic Exists Already");
+      res.status(409).send(TOPIC_ALREADY_EXISTS);
       return;
     }
 
@@ -86,10 +95,10 @@ export const updateTopic = async (req, res) => {
       { name },
       { name: newName, visibility }
     ).exec();
-    if (topic == null) res.status(500).send("Topic does not exist");
-    else res.send("Topic updated from server");
+    if (topic == null) res.status(500).send(TOPIC_NOT_FOUND);
+    else res.send(TOPIC_UPDATE_SUCCESS);
   } catch (err) {
     console.error("Error updating topic:", err);
-    res.status(500).send("Error updating topic");
+    res.status(500).send(TOPIC_UPDATE_FAIL);
   }
 };
