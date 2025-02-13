@@ -1,49 +1,55 @@
-import Users from "../model/user.js";
+import Users from "../model/user.model.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidV4 } from "uuid";
+import { transporter, getMailOptions } from "../utils/mailer.utils.js";
+import {
+  LOGIN_FAIL,
+  LOGIN_SUCCESS,
+  MISSING_FIELD,
+  PASSWORD_INCORRECT,
+  PASSWORD_RESET_INVALID_TOKEN,
+  PASSWORD_RESET_SENT,
+  PASSWORD_RESET_SENT_FAIL,
+  PASSWORD_RESET_SUCCESS,
+  REGISTERED_FAIL,
+  REGISTERED_SUCCESS,
+  USER_ALREADY_EXISTS,
+  USER_NOT_FOUND,
+} from "../constants/user.constants.js";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  secure: true,
-  auth: {
-    user: "shyam@drapcode.com",
-    pass: process.env.SECRET_PASS,
-  },
-});
-
 export const createUser = async (req, res) => {
+  console.log("user", req.body);
   try {
-    const { email, username, password, firstname, lastname } = req.body;
+    const { email, username, password, firstName, lastName } = req.body;
 
-    if (!(email && username && password && firstname && lastname)) {
-      return res.status(400).send("Missing Fields");
+    if (!(email && username && password && firstName && lastName)) {
+      return res.status(400).send(MISSING_FIELD);
     }
 
     const checkUser = await Users.findOne({
       $or: [{ email: email }, { username: username }],
     }).exec();
 
-    if (checkUser) return res.status(409).send("User Exists Already");
+    if (checkUser) return res.status(409).send(USER_ALREADY_EXISTS);
 
     const user = new Users({
-      uuid: uuidv4(),
+      uuid: uuidV4(),
       email: email,
       username: username,
       password: password,
-      firstname: firstname,
-      lastname: lastname,
+      firstName: firstName,
+      lastName: lastName,
     });
     console.log(user);
     await user.save();
-    res.send("created");
+    res.status(200).send(REGISTERED_SUCCESS);
   } catch (err) {
     console.error("Error saving user:", err);
-    res.status(500).send("Error saving data");
+    res.status(500).send(REGISTERED_FAIL);
   }
 };
 
@@ -63,7 +69,7 @@ export const loginUser = async (req, res) => {
     console.log(password);
 
     if (!emailOrUsername || !password) {
-      return res.status(500).send("Missing Fields");
+      return res.status(500).send(MISSING_FIELD);
     }
 
     const user = await Users.findOne({
@@ -71,17 +77,17 @@ export const loginUser = async (req, res) => {
     }).exec();
 
     if (!user) {
-      return res.status(500).send("User not found");
+      return res.status(500).send(USER_NOT_FOUND);
     }
 
     if (user.password === password) {
       const token = jwt.sign({ user }, process.env.SECRET_KEY);
-      return res.json({ message: "Login successful", token, data: user });
+      return res.json({ message: LOGIN_SUCCESS, token, data: user });
     } else {
-      res.status(400).send("Password incorrect");
+      res.status(400).send(PASSWORD_INCORRECT);
     }
   } catch (err) {
-    res.status(500).send("Error getting user:", err);
+    res.status(500).send(LOGIN_FAIL, err);
   }
 };
 
@@ -90,33 +96,27 @@ export const forgetPassword = async (req, res) => {
   const user = await Users.findOne({ email: email });
 
   if (!user) {
-    return res.status(404).send("User not found");
+    return res.status(404).send(USER_NOT_FOUND);
   }
 
   const token = crypto.randomBytes(20).toString("hex");
   user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 3600000;
+  user.resetPasswordExpires = Date.now() + 360000;
   await user.save();
 
   console.log(user);
-  const resetUrl = `${process.env.CLIENT_URL}/resetPassword/?token=${token}`;
-  const mailOptions = {
-    to: user.email,
-    from: "shyam@drapcode.com",
-    subject: "Password Reset Request",
-    text: `Please click the link to reset your password: ${resetUrl}`,
-  };
+
+  const mailOptions = getMailOptions(token, user.email);
 
   transporter.sendMail(mailOptions, (err, response) => {
     if (err) {
-      return res.status(500).send("Error sending email");
+      return res.status(500).send(PASSWORD_RESET_SENT_FAIL);
     }
-    res.status(200).send("Password reset email sent");
+    res.status(200).send(PASSWORD_RESET_SENT);
   });
 };
 
 export const resetPassword = async (req, res) => {
-  console.log("working");
   const { token } = req.params;
   const { newPassword } = req.body;
 
@@ -126,9 +126,7 @@ export const resetPassword = async (req, res) => {
   });
 
   if (!user) {
-    return res
-      .status(400)
-      .send("Password reset token is invalid or has expired");
+    return res.status(400).send(PASSWORD_RESET_INVALID_TOKEN);
   }
 
   user.password = newPassword;
@@ -136,5 +134,5 @@ export const resetPassword = async (req, res) => {
   user.resetPasswordExpires = undefined;
   await user.save();
 
-  res.status(200).send("Your password has been reset successfully");
+  res.status(200).send(PASSWORD_RESET_SUCCESS);
 };

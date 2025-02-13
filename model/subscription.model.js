@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const SubsSchema = new Schema({
   uuid: { type: String },
-  topic: { type: String, required: true },
-  user: { type: String, required: true },
+  topic: { type: String, required: true, ref: 'Topics' },
+  user: { type: String, required: true, ref: 'Users' },
   seriousness: {
     type: String,
     enum: ["Serious", "Very Serious", "Casual"],

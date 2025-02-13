@@ -1,5 +1,5 @@
 import express from "express";
-import validateBody from "../middleware/validateBody.js";
+import validateBody from "../middleware/validateBody.middleware.js";
 import {
   createUser,
   getUser,
@@ -7,14 +7,14 @@ import {
   resetPassword,
   forgetPassword,
 } from "../controller/user.controller.js";
-import checkAuth from "../middleware/auth.js";
+import checkAuth from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router.post("/createUser", validateBody, createUser);
-router.post("/getUser",checkAuth, validateBody, getUser);
+router.get("/getUser",checkAuth, validateBody, getUser);
 router.post("/loginUser", validateBody, loginUser);
 router.post("/resetPassword/:token", validateBody, resetPassword);
-router.post("/forgetPassword", validateBody, forgetPassword);
+router.post("/forgetPass", validateBody, forgetPassword);
 
 export default router;
