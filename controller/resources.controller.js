@@ -33,44 +33,4 @@ export const getResource = async (req, res) => {
   }
 };
 
-export const updateResource = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { createdBy, description, topic } = req.body;
 
-    if (!(createdBy && description && topic)) {
-      return res.status(400).send(MISSING_FIELD);
-    }
-    // const updatedResource = await Resource.findByIdAndUpdate(
-    //   id,
-    //   { name, description, url },
-    //   { new: true }
-    // );
-
-    // if (!updatedResource) {
-    //   return res.status(404).send("Resource not found");
-    // }
-
-    // res.status(200).send(updatedResource);
-  } catch (err) {
-    console.error("Error updating resource:", err);
-    res.status(500).send(RESOURCE_UPDATE_FAIL);
-  }
-};
-
-export const deleteResource = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedResource = await Resource.findByIdAndDelete(id);
-
-    if (!deletedResource) {
-      return res.status(404).send("Resource not found");
-    }
-
-    res.status(200).send("Resource deleted successfully");
-  } catch (err) {
-    console.error("Error deleting resource:", err);
-    res.status(500).send(RESOURCE_DELETE_FAIL);
-  }
-};

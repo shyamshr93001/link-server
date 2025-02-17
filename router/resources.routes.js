@@ -10,7 +10,5 @@ const router = express.Router();
 
 router.post('/resources', addResource);
 router.get('/resources', getResource);
-router.put('/resources/:id', updateResource);
-router.delete('/resources/:id', deleteResource);
 
 export default router;
