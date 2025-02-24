@@ -16,6 +16,7 @@ import {
   REGISTERED_FAIL,
   REGISTERED_SUCCESS,
   USER_ALREADY_EXISTS,
+  USER_GET_FAIL,
   USER_NOT_FOUND,
 } from "../constants/user.constants.js";
 
@@ -58,7 +59,7 @@ export const getUser = async (req, res) => {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     res.send(decoded.user);
   } catch (err) {
-    res.status(500).send("Error getting user:", err);
+    res.status(500).send(USER_GET_FAIL, err);
   }
 };
 
@@ -133,6 +134,6 @@ export const resetPassword = async (req, res) => {
   user.resetPasswordToken = undefined;
   user.resetPasswordExpires = undefined;
   await user.save();
-
+  
   res.status(200).send(PASSWORD_RESET_SUCCESS);
 };

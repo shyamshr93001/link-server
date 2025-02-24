@@ -3,6 +3,7 @@ import {
   TOPIC_CREATED_FAIL,
   TOPIC_DELETE_FAIL,
   TOPIC_DELETE_SUCCESS,
+  TOPIC_GET_FAIL,
   TOPIC_NOT_FOUND,
   TOPIC_UPDATE_FAIL,
   TOPIC_UPDATE_SUCCESS,
@@ -46,7 +47,7 @@ export const getTopics = async (req, res) => {
     const topic = await Topics.find();
     res.send(topic);
   } catch (err) {
-    res.status(500).send("Error getting topic:", err);
+    res.status(500).send(TOPIC_GET_FAIL, err);
   }
 };
 

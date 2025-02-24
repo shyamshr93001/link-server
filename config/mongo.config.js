@@ -8,5 +8,5 @@ import mongoose from "mongoose";
   .then(() => {
     console.log("connection successful");
   });
-
+  
   export default mongo

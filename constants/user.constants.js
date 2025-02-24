@@ -1,3 +1,4 @@
+export const USER_GET_FAIL = "Error while getting user"
 export const USER_ALREADY_EXISTS = "User already exists";
 export const REGISTERED_SUCCESS = "Registered Successfully";
 export const REGISTERED_FAIL = "Failed to register user"
