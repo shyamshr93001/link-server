@@ -24,8 +24,7 @@ export const createTopic = async (req, res) => {
     const checkTopic = await Topics.findOne({ name }).exec();
 
     if (checkTopic) {
-      res.status(409).send(TOPIC_ALREADY_EXISTS);
-      return;
+      return res.status(409).send(TOPIC_ALREADY_EXISTS);
     }
     const topic = new Topics({
       uuid: uuidV4(),
@@ -96,7 +95,7 @@ export const updateTopic = async (req, res) => {
       { name },
       { name: newName, visibility }
     ).exec();
-    if (topic == null) res.status(500).send(TOPIC_NOT_FOUND);
+    if (topic == null) return res.status(404).send(TOPIC_NOT_FOUND);
     else res.send(TOPIC_UPDATE_SUCCESS);
   } catch (err) {
     console.error("Error updating topic:", err);
