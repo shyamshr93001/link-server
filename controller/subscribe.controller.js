@@ -6,6 +6,7 @@ import {
   SUBSCRIBE_EXISTS,
   SUBSCRIBE_FAIL,
   SUBSCRIBE_SUCCESS,
+  SUBSCRIPTION_GET_FAIL,
   SUBSCRIPTION_NOT_FOUND,
   UNSUBSCRIBE_FAIL,
   UNSUBSCRIBE_SUCCESS,
@@ -75,39 +76,39 @@ export const getSubscribers = async (req, res) => {
       .exec();
     res.send(subs);
   } catch (err) {
-    res.status(500).send("Error getting subscribers:", err);
+    res.status(500).send(SUBSCRIPTION_GET_FAIL, err);
   }
 };
 
-export const testFunc = async (req, res) => {
-  try {
-    const topic = new Test({
-      topic: req.body.topic,
-      user: req.body.user,
-    });
+// export const testFunc = async (req, res) => {
+//   try {
+//     const topic = new Test({
+//       topic: req.body.topic,
+//       user: req.body.user,
+//     });
 
-    await topic.save();
-    res.send(topic);
-  } catch (error) {
-    res.send(error);
-  }
-};
+//     await topic.save();
+//     res.send(topic);
+//   } catch (error) {
+//     res.send(error);
+//   }
+// };
 
-export const testReadFunc = async (req, res) => {
-  try {
-    const topics = await Test.find()
-      .populate({
-        path: "topic",
-        foreignField: "uuid",
-      })
-      .populate({
-        path: "user",
-        foreignField: "uuid",
-      })
-      .exec();
-    res.send(topics);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error reading topics:", err);
-  }
-};
+// export const testReadFunc = async (req, res) => {
+//   try {
+//     const topics = await Test.find()
+//       .populate({
+//         path: "topic",
+//         foreignField: "uuid",
+//       })
+//       .populate({
+//         path: "user",
+//         foreignField: "uuid",
+//       })
+//       .exec();
+//     res.send(topics);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send("Error reading topics:", err);
+//   }
+// };

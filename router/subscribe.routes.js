@@ -4,8 +4,6 @@ import checkAuth from "../middleware/auth.middleware.js";
 import {
   getSubscribers,
   subscribeTopic,
-  testFunc,
-  testReadFunc,
   unsubscribeTopic,
 } from "../controller/subscribe.controller.js";
 
@@ -15,7 +13,7 @@ router.get("/getSubscribers", getSubscribers);
 router.post("/subscribe", checkAuth, validateBody, subscribeTopic);
 router.delete("/unsubscribe", checkAuth, validateBody, unsubscribeTopic);
 
-router.post("/test", testFunc);
-router.post("/test1", testReadFunc);
+// router.post("/test", testFunc);
+// router.post("/test1", testReadFunc);
 
 export default router;
