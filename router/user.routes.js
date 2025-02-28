@@ -8,10 +8,12 @@ import {
   forgetPassword,
 } from "../controller/user.controller.js";
 import checkAuth from "../middleware/auth.middleware.js";
+import validateSchema from "../middleware/validateSchema.middleware.js";
+import { userRegisterSchema } from "../validation/user.validation.js";
 
 const router = express.Router();
 
-router.post("/createUser", validateBody, createUser);
+router.post("/createUser", validateBody, validateSchema(userRegisterSchema), createUser);
 router.get("/getUser",checkAuth, validateBody, getUser);
 router.post("/loginUser", validateBody, loginUser);
 router.post("/resetPassword/:token", validateBody, resetPassword);

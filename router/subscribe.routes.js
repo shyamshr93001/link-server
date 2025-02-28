@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get("/getSubscribers", getSubscribers);
+router.get("/getSubscribers", checkAuth, getSubscribers);
 router.post("/subscribe", checkAuth, validateBody, subscribeTopic);
 router.delete("/unsubscribe", checkAuth, validateBody, unsubscribeTopic);
 

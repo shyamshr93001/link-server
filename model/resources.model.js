@@ -7,6 +7,8 @@ const ResourceSchema = new Schema({
   createdBy: { type: String, required: true, ref: 'Users' },
   dateCreated: { type: Date, default: Date.now, required: true },
   lastUpdated: { type: Date, default: Date.now, required: true },
+  description: { type: String },
+  url: { type: String },
 });
 
 const Resource = mongoose.model("Resources", ResourceSchema);

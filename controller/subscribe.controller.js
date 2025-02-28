@@ -1,6 +1,5 @@
 import Subscriptions from "../model/subscription.model.js";
 import { v4 as uuidV4 } from "uuid";
-import Test from "../model/test.model.js";
 import { MISSING_FIELD } from "../constants/user.constants.js";
 import {
   SUBSCRIBE_EXISTS,
