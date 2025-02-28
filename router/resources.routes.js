@@ -1,14 +1,14 @@
-import express from 'express';
+import express from "express";
 import {
   addResource,
   getResource,
-  updateResource,
-  deleteResource
-} from '../controllers/resources.controller.js';
+} from "../controller/resources.controller.js";
+import checkAuth from "../middleware/auth.middleware.js";
+import validateBody from "../middleware/validateBody.middleware.js";
 
 const router = express.Router();
 
-router.post('/resources', addResource);
-router.get('/resources', getResource);
+router.post("/resources", checkAuth, validateBody, addResource);
+router.get("/resources", checkAuth, getResource);
 
 export default router;

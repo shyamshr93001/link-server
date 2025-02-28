@@ -1,4 +1,3 @@
-import { ValidationError } from "yup";
 
 const validateSchema = (schema) => async (req, res, next) => {
   try {

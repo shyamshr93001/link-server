@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import userRoute from "./router/user.routes.js";
 import topicRoute from "./router/topic.routes.js";
 import subsRoute from "./router/subscribe.routes.js" 
+import resourcesRoute from "./router/resources.routes.js"
 import "./config/mongo.config.js";
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", userRoute);
 app.use("/", topicRoute);
 app.use("/", subsRoute)
+app.use("/", resourcesRoute)
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
