@@ -7,3 +7,8 @@ export const userRegisterSchema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
 });
+
+// export const userLoginScheme = yup.object().shape({
+//   emailOrUsername: yup.string().email().required(),
+//   password: yup.string().required(),
+// });

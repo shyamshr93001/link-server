@@ -25,7 +25,6 @@ dotenv.config();
 export const createUser = async (req, res) => {
   console.log("user", req.body);
   try {
-
     const { email, username, password, firstName, lastName } = req.body;
 
     if (!(email && username && password && firstName && lastName)) {
@@ -40,7 +39,7 @@ export const createUser = async (req, res) => {
 
     const user = new Users({
       uuid: uuidV4(),
-      email: email,
+      email: email.toLowerCase(),
       username: username,
       password: password,
       firstName: firstName,
@@ -50,7 +49,6 @@ export const createUser = async (req, res) => {
     await user.save();
     res.status(200).send(REGISTERED_SUCCESS);
   } catch (err) {
-   
     console.error("Error saving user:", err);
     res.status(500).send(REGISTERED_FAIL);
   }
@@ -76,7 +74,7 @@ export const loginUser = async (req, res) => {
     }
 
     const user = await Users.findOne({
-      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      $or: [{ email: emailOrUsername.toLowerCase() }, { username: emailOrUsername }],
     }).exec();
 
     if (!user) {
@@ -84,13 +82,15 @@ export const loginUser = async (req, res) => {
     }
 
     if (user.password === password) {
-      const token = jwt.sign({ user }, process.env.SECRET_KEY, {expiresIn: "100h"});
+      const token = jwt.sign({ user }, process.env.SECRET_KEY, {
+        expiresIn: "100h",
+      });
       return res.json({ message: LOGIN_SUCCESS, token, data: user });
     } else {
       res.status(400).send(PASSWORD_INCORRECT);
     }
   } catch (err) {
-    res.status(500).send(LOGIN_FAIL, err);
+    res.status(400).send(LOGIN_FAIL, err);
   }
 };
 
@@ -136,6 +136,16 @@ export const resetPassword = async (req, res) => {
   user.resetPasswordToken = undefined;
   user.resetPasswordExpires = undefined;
   await user.save();
-  
+
   res.status(200).send(PASSWORD_RESET_SUCCESS);
+};
+
+export const getOtherUsers = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = await Users.findOne({ username: username }).select('-password').exec();
+    res.send(users);
+  } catch (err) {
+    res.status(500).send(USER_GET_FAIL, err);
+  }
 };

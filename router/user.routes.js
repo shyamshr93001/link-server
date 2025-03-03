@@ -6,6 +6,7 @@ import {
   loginUser,
   resetPassword,
   forgetPassword,
+  getOtherUsers,
 } from "../controller/user.controller.js";
 import checkAuth from "../middleware/auth.middleware.js";
 import validateSchema from "../middleware/validateSchema.middleware.js";
@@ -18,5 +19,6 @@ router.get("/getUser",checkAuth, validateBody, getUser);
 router.post("/loginUser", validateBody, loginUser);
 router.post("/resetPassword/:token", validateBody, resetPassword);
 router.post("/forgetPass", validateBody, forgetPassword);
+router.get("/getOtherUser/:username", validateBody, getOtherUsers);
 
 export default router;
